@@ -38,6 +38,7 @@ class Board extends Component {
         } 
         return (
             <div className="game-container">
+                <h2>TicTacToe Game</h2>
                 <div className="status">
                     <h3>{status}</h3>
                 </div>
