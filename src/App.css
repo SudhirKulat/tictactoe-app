@@ -1,38 +1,101 @@
-.App {
-  text-align: center;
+*, *::after, *::before{
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+:root{
+  --cell-size: 100px;
+  --marker-size: calc(var(--cell-size)* .7);
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.board{
+  width: 100vw;
+  height: 100vh;
+  display: grid;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-content: center;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: repeat(3,auto);
+  position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+
+.cell{
+  width:var(--cell-size);
+  height:var(--cell-size);
+  border-width: thin;
+  border-color: lightgrey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #fff;
+  outline: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cell.x, .cell.circle{
+  cursor: not-allowed;
 }
+
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3){
+  border-top: none;
+  border-radius: 2px;
+}
+.cell:nth-child(3n+1){
+  border-left: none;
+  border-radius: 2px;
+}
+
+.cell:nth-child(3n+3){
+  border-right: none;
+  border-radius: 2px;
+}
+
+.cell:last-child,
+.cell:nth-child(8),
+.cell:nth-child(7){
+  border-bottom: none;
+  border-radius: 2px;
+}
+
+.cell.x::before,
+.cell.x::after{
+  position: absolute;  
+  content: '';
+  width: calc(var(--marker-size)* .36);
+  height: var(--marker-size);
+  background-color: #1fc8db;
+    background-image: linear-gradient(141deg, #9fb8ad 0%, #1fc8db 51%, #2cb5e8 100%);
+}
+
+.cell.x::before{
+  transform: rotate(45deg);
+}
+
+.cell.x::after{
+  transform: rotate(-45deg);
+}
+
+.cell.circle::before,
+.cell.circle::after{
+  position: absolute;  
+  content: '';
+  border-radius: 50%;
+}
+
+.cell.circle::before{
+  width: var(--marker-size);
+  height: var(--marker-size);
+  background-color: chocolate;
+}
+
+.cell.circle::after{
+  width: calc(var(--marker-size)* .7);
+  height: calc(var(--marker-size)* .7);
+  background-color: #fff;
+}
+
+
+
+
