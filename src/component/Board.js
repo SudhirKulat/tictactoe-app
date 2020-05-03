@@ -7,10 +7,14 @@ class Board extends Component {
     
         this.state = {
             squares: Array(9).fill(null),
-            xIsNext: true
+            xIsNext: true,
+            isClickable: true
         }
     }
     handleClick(i) {
+        if (!this.state.isClickable) {
+            return;
+        }
         const squares = this.state.squares.slice();
         if (calculateWinner(squares) || squares[i]) {
             return;
@@ -18,8 +22,37 @@ class Board extends Component {
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
             squares: squares,
-            xIsNext: !this.state.xIsNext
-        });
+            xIsNext: !this.state.xIsNext,
+            isClickable: false
+        },()=>{this.computerTurn(i)});
+    }
+
+    computerTurn=()=>{
+        const squares = this.state.squares.slice(); 
+        if (calculateWinner(squares)) {
+            return;
+        }
+        let notFilled = [];
+        let isAvailable = false;
+
+        for (let i = 0; i < 9; i++) {
+            if(this.state.squares[i]==null){
+                notFilled.push(i);
+                isAvailable = true;
+            }
+        }
+
+        if (isAvailable) {
+            setTimeout(() => { 
+                var randomItem = notFilled[Math.floor(Math.random() * notFilled.length)];
+                squares[randomItem] = this.state.xIsNext ? 'X' : 'O';
+                this.setState({
+                    squares: squares,
+                    xIsNext: !this.state.xIsNext,
+                    isClickable: true
+                });
+            }, 1000);
+        }
     }
 
     renderSquare(i){
