@@ -4,7 +4,6 @@ import Squares from './Squares';
 class Board extends Component {
     constructor(props) {
         super(props)
-    
         this.state = {
             squares: Array(9).fill(null),
             xIsNext: true,
@@ -61,19 +60,32 @@ class Board extends Component {
         onClick={() => this.handleClick(i)}
         />
     }
+
+    restartGame=()=>{
+        this.setState({
+            squares: Array(9).fill(null),
+            xIsNext: true,
+            isClickable: true
+        });
+    }
     render() {
         const winner = calculateWinner(this.state.squares);
-        let status;
-        if (winner) {
-          status = 'Winner: ' + winner;
-        } else {
-          status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        } 
+        let ai=0;
+        let user =0;
+        let status = winner =='X'?user=1:(winner=='O')? ai=1:'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        let restart;
+        if(winner){
+            restart= <button onClick={this.restartGame}>Restart</button>;
+        }
         return (
             <div className="game-container">
-                <h2>TicTacToe Game</h2>
                 <div className="status">
-                    <h3>{status}</h3>
+                    <p>
+                        <span>Alex</span>
+                        <button status-btn>{user+"-"+ai}</button>
+                        <span>AI</span>
+
+                    </p>
                 </div>
                 <div className="board">
                     {this.renderSquare(0)}
@@ -85,6 +97,10 @@ class Board extends Component {
                     {this.renderSquare(6)}
                     {this.renderSquare(7)}
                     {this.renderSquare(8)}
+                </div>
+                <div className="restart-game">
+                    <p>{user?'Alex won the game':(ai)?'AI won the game':''}</p>
+                    {restart}
                 </div>
             </div>
         )
