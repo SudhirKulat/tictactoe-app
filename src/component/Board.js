@@ -67,15 +67,42 @@ class Board extends Component {
             xIsNext: true,
             isClickable: true
         });
+        sessionStorage.clear();
+    }
+    
+
+    nextRound(winner){
+        if(winner=="user"){
+            let curentScoreUser = Number(sessionStorage.getItem('user'))
+            let b=curentScoreUser+1;
+            sessionStorage.setItem('user', b);
+        }
+        if(winner=='AI'){
+            let curentScoreAI = Number(sessionStorage.getItem('ai'))
+            let a= curentScoreAI+1;
+            sessionStorage.setItem('ai', a);
+        }
+        this.setState({
+            squares: Array(9).fill(null),
+            xIsNext: true,
+            isClickable: true
+        });
     }
     render() {
         const winner = calculateWinner(this.state.squares);
-        let ai=0;
-        let user =0;
-        let status = winner =='X'?user=1:(winner=='O')? ai=1:'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        let restart;
+        let ai=Number(sessionStorage.getItem('ai'));
+        let user =Number(sessionStorage.getItem('user'));
+        if(ai==null || user==null){
+            ai = 0;
+            user = 0;
+        }
+        let status = winner =='X'? user+=1:(winner=='O')? ai +=1:'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        let nextRound,reset;
         if(winner){
-            restart= <button onClick={this.restartGame}>Restart</button>;
+            let winnerName;
+            winner=='X' ? winnerName="user": (winner=='O')?winnerName="AI":winnerName='DRAW'
+            nextRound= <button onClick={(winner)=>this.nextRound(winnerName)}>Next Round</button>;
+            reset= <button onClick={this.restartGame}>Reset</button>;
         }
         return (
             <div className="game-container">
@@ -99,8 +126,9 @@ class Board extends Component {
                     {this.renderSquare(8)}
                 </div>
                 <div className="restart-game">
-                    <p>{user?'Alex won the game':(ai)?'AI won the game':''}</p>
-                    {restart}
+                    <p>{winner=='X'?'Alex won the game':(winner=='O')?'AI won the game':''}</p>
+                    <p>{winner=="DRAW"?"Its Draw":""}</p>
+                    {nextRound}{reset}
                 </div>
             </div>
         )
@@ -124,7 +152,13 @@ function calculateWinner(squares) {
             return squares[a];
         }
     }
-    return null;
+    // return null;
+    for(let j = 0; j < squares.length; j++) {
+        if (squares[j] == null) {
+          return null;
+        }
+     }
+     return "DRAW";
 }
 
 export default Board;
