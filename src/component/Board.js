@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Squares from './Squares';
+import { Route, BrowserRouter as Router, Switch, Link } from 'react-router-dom'
 
 class Board extends Component {
     constructor(props) {
@@ -7,7 +8,8 @@ class Board extends Component {
         this.state = {
             squares: Array(9).fill(null),
             xIsNext: true,
-            isClickable: true
+            isClickable: true,
+            player: this.props.player
         }
     }
     handleClick(i) {
@@ -19,40 +21,52 @@ class Board extends Component {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-            squares: squares,
-            xIsNext: !this.state.xIsNext,
-            isClickable: false
-        },()=>{this.computerTurn(i)});
-    }
-
-    computerTurn=()=>{
-        const squares = this.state.squares.slice(); 
-        if (calculateWinner(squares)) {
-            return;
+        if(this.state.player=="ai"){
+            this.setState({
+                squares: squares,
+                xIsNext: !this.state.xIsNext,
+                isClickable: false
+            },()=>{this.computerTurn(i)});
         }
-        let notFilled = [];
-        let isAvailable = false;
-
-        for (let i = 0; i < 9; i++) {
-            if(this.state.squares[i]==null){
-                notFilled.push(i);
-                isAvailable = true;
+        else{
+            this.setState({
+                squares: squares,
+                xIsNext: !this.state.xIsNext,
+                isClickable: true
+            });
+        }
+        
+    }
+    
+        computerTurn=()=>{
+            const squares = this.state.squares.slice(); 
+            if (calculateWinner(squares)) {
+                return;
+            }
+            let notFilled = [];
+            let isAvailable = false;
+    
+            for (let i = 0; i < 9; i++) {
+                if(this.state.squares[i]==null){
+                    notFilled.push(i);
+                    isAvailable = true;
+                }
+            }
+    
+            if (isAvailable) {
+                setTimeout(() => { 
+                    var randomItem = notFilled[Math.floor(Math.random() * notFilled.length)];
+                
+                    squares[randomItem] = this.state.xIsNext ? 'X' : 'O';
+                    this.setState({
+                        squares: squares,
+                        xIsNext: !this.state.xIsNext,
+                        isClickable: true
+                    });
+                }, 1000);
             }
         }
 
-        if (isAvailable) {
-            setTimeout(() => { 
-                var randomItem = notFilled[Math.floor(Math.random() * notFilled.length)];
-                squares[randomItem] = this.state.xIsNext ? 'X' : 'O';
-                this.setState({
-                    squares: squares,
-                    xIsNext: !this.state.xIsNext,
-                    isClickable: true
-                });
-            }, 1000);
-        }
-    }
 
     renderSquare(i){
         return <Squares 
@@ -88,7 +102,12 @@ class Board extends Component {
             isClickable: true
         });
     }
+
+    reset(){
+        sessionStorage.clear();
+    }
     render() {
+        let player = this.state.player=="ai"?"AI":"Friend"
         const winner = calculateWinner(this.state.squares);
         let ai=Number(sessionStorage.getItem('ai'));
         let user =Number(sessionStorage.getItem('user'));
@@ -96,21 +115,23 @@ class Board extends Component {
             ai = 0;
             user = 0;
         }
+
         let status = winner =='X'? user+=1:(winner=='O')? ai +=1:'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         let nextRound,reset;
         if(winner){
             let winnerName;
             winner=='X' ? winnerName="user": (winner=='O')?winnerName="AI":winnerName='DRAW'
-            nextRound= <button onClick={(winner)=>this.nextRound(winnerName)}>Next Round</button>;
-            reset= <button onClick={this.restartGame}>Reset</button>;
+            nextRound= <button onClick={(winner)=>this.nextRound(winnerName)} className="next-btn">Next Round</button>;
+            reset= <button onClick={this.restartGame} className="reset-btn">Reset</button>;
         }
+
         return (
             <div className="game-container">
                 <div className="status">
                     <p>
                         <span>Alex</span>
                         <button status-btn>{user+"-"+ai}</button>
-                        <span>AI</span>
+                        <span>{player}</span>
 
                     </p>
                 </div>
@@ -126,9 +147,10 @@ class Board extends Component {
                     {this.renderSquare(8)}
                 </div>
                 <div className="restart-game">
-                    <p>{winner=='X'?'Alex won the game':(winner=='O')?'AI won the game':''}</p>
+                    <p>{winner=='X'?'Alex won the game':(winner=='O')?`${this.state.player} won the game`:''}</p>
                     <p>{winner=="DRAW"?"Its Draw":""}</p>
                     {nextRound}{reset}
+                    <p><Link to="/" onClick={()=>this.reset()}className="custom-btn btn-friend">Home</Link></p>
                 </div>
             </div>
         )
@@ -146,19 +168,20 @@ function calculateWinner(squares) {
       [0, 4, 8],
       [2, 4, 6],
     ];
+
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
             return squares[a];
         }
     }
-    // return null;
+    
     for(let j = 0; j < squares.length; j++) {
         if (squares[j] == null) {
-          return null;
+            return null;
         }
-     }
-     return "DRAW";
+    }
+    return "DRAW";
 }
 
 export default Board;

@@ -13,11 +13,7 @@
 .game-container{
   position: relative;
 }
-.status{
-  /* position: absolute;
-  top: 20%;
-  left: 43%; */
-}
+
 
 .status span{
   font-weight: bold;
@@ -94,7 +90,7 @@
   height: var(--marker-size);
   /* background-color: #1fc8db;
     background-image: linear-gradient(141deg, #9fb8ad 0%, #1fc8db 51%, #2cb5e8 100%); */
-  background-color: #045de9;
+  /* background-color: #045de9; */
   
 }
 
@@ -135,11 +131,56 @@
 
 .restart-game button{
   padding: 10px 30px;
-  background-color: #fff;
   border-radius: 5px;
   font-weight: bold;
   font-size: 17px;
+  border-radius: 25px;
+  margin: 0 10px;
 }
+.next-btn{
+  background-color: #045de9;
+  color:#fff;
+}
+.reset-btn{
+  background-color: #fff;
+  color:#000;
+}
+
+.home{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+.select-btn{
+  margin-bottom: 20px;
+}
+.btn-friend{
+  padding: 6px 15px;
+  color: #000;
+  background-color: #fff;
+  border-radius: 10px;  
+  text-decoration: none;
+}
+.btn-ai{
+  padding: 6px 30px;
+  color: #fff;
+  border-radius: 10px;
+  background-color: #045de9;
+  text-decoration: none;
+}
+
+.marker-icon{
+  transform: rotate(-90deg);
+}
+.marker-selection{
+  background-color: inherit;
+}
+
 
 
 
